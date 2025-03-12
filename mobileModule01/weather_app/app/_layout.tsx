@@ -11,7 +11,7 @@ const Layout = () => {
           screenOptions={
             {
               headerShown: false,
-              swipeEnabled: false
+              swipeEnabled: false,
             }
           }
         />
