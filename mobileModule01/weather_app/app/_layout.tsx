@@ -1,15 +1,13 @@
-import React from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Drawer } from 'expo-router/drawer';
-import "../global.css"
-import AppBar from '../components/AppBar';
-import { StatusBar } from 'react-native';
+import "@/global.css"
+import { StatusBar } from 'expo-status-bar';
+import Constants from 'expo-constants';
 
 const Layout = () => {
   return (
-    <GestureHandlerRootView className="flex-1">
-        <StatusBar barStyle="light-content" backgroundColor={'black'} />
-        <AppBar />
+    <GestureHandlerRootView className="flex-1" style={{marginTop: Constants.statusBarHeight}}>
+        <StatusBar backgroundColor={'black'} />
         <Drawer
           screenOptions={
             {
