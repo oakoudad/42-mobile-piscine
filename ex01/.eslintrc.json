@@ -1,0 +1,6 @@
+{
+    "rules": {
+      "tailwindcss/classnames-order": "off"
+    }
+  }
+  
