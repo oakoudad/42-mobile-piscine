@@ -7,14 +7,7 @@ const Layout = () => {
   return (
     <View className="flex-1" style={{marginTop: Constants.statusBarHeight}}>
         <StatusBar backgroundColor={'black'} />
-        <Drawer
-          screenOptions={
-            {
-              headerShown: false,
-              swipeEnabled: false,
-            }
-          }
-        />
+        <Drawer screenOptions={{headerShown: false,swipeEnabled: false,}}/>
     </View>
   )
 }
