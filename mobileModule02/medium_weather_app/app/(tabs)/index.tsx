@@ -1,12 +1,20 @@
 import { View, Text } from 'react-native';
 import type { GeolocationProps } from '@/utils/types';
-import {ActivityIndicator} from 'react-native';
 import { useState, useEffect } from 'react';
-import {getWeatherDescription} from '@/utils/weather';
+import { getWeatherDescription, AxiosOptions } from '@/utils/utils';
+import Loading from '@/components/Loading';
+import axios from 'axios';
 
-export default function CurrentlyTab({geolocation, errorMsg}: GeolocationProps)
+interface WeatherProps {
+  temperature: string;
+  wind_speed: string;
+  weather_code: string;
+  is_day: number;
+}
+
+export default function CurrentlyTab({geolocation, errorMsg, setErrorMsg}: GeolocationProps)
 {
-  const [weather, setWeather] = useState<{temperature: string;wind_speed: string;weather_code: string;is_day: number} | null>(null);
+  const [weather, setWeather] = useState<WeatherProps | null>(null);
 
   async function fetchWeather()
   {
@@ -14,18 +22,27 @@ export default function CurrentlyTab({geolocation, errorMsg}: GeolocationProps)
       return
 
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${geolocation.latitude}&longitude=${geolocation.longitude}&current=temperature_2m,is_day,wind_speed_10m,weather_code&timezone=GMT`;
-    await fetch(url)
-    .then(res => res.json())
+    
+    setErrorMsg(null);
+    axios.get(url, AxiosOptions)
+    .then(res => res.data)
     .then(data => {
-      if (data?.current)
+      if (data?.current?.weather_code)
         setWeather({
           temperature: data.current.temperature_2m,
           wind_speed: data.current.wind_speed_10m,
           weather_code: data.current.weather_code,
           is_day: data.current.is_day
         });
+      else
+        setErrorMsg('Could not find any result for the supplied address or coordinates.');
     })
-    .catch(err => console.error(err));
+    .catch((err) => {
+      if (err?.response?.data?.reason?.length > 0)
+        setErrorMsg(err.response.data.reason);
+      else
+        setErrorMsg('The service connection is lost, please check your internet connection or try again later');
+    });
   }
 
   useEffect(() => {
@@ -57,7 +74,7 @@ export default function CurrentlyTab({geolocation, errorMsg}: GeolocationProps)
             Wind speed: <Text className='font-bold'>{weather.wind_speed} km/h</Text>
           </Text>
         </View>
-        : <ActivityIndicator size="large" color="#000000" />
+        : <Loading />
       }
     </View>
   );

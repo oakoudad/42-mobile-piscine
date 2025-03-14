@@ -13,9 +13,11 @@ export default function AppBar({ setResult }:AppBarProps) {
         <View className='flex-row bg-black py-2'>
             <View className='flex-1 justify-center relative'>
                 <TextInput
+                    inputMode="search"
+                    returnKeyType="search"
                     value={search}
                     placeholderTextColor="white"
-                    placeholder='Search'
+                    placeholder='Search for a city'
                     className='text-white pl-10'
                     onChangeText={setSearch}
                     onSubmitEditing={() => {setResult(search);setSearch('')}}

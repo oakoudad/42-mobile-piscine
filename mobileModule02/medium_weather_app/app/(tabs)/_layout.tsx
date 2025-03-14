@@ -23,8 +23,8 @@ const TabsLayout = () => {
             icon: ({ route, color }) => (<MaterialCommunityIcons name={route.icon as keyof typeof MaterialCommunityIcons.glyphMap} size={24} color={color} />)
           }}      
           navigationState={{ index, routes }}
-          renderScene={({ route }) => renderScene({ route, geolocation, errorMsg })}
-          onIndexChange={()=>setIndex(0)}
+          renderScene={({ route }) => renderScene({ route, geolocation, errorMsg, setErrorMsg })}
+          onIndexChange={(index)=> setIndex(index)}
           initialLayout={{ width: layout.width }}
           tabBarPosition="bottom"
           renderTabBar={props => {
@@ -34,8 +34,6 @@ const TabsLayout = () => {
                 indicatorStyle={{ backgroundColor: 'white' }}
                 style={{
                   backgroundColor: 'black',
-                  borderTopWidth: 1,
-                  borderTopColor: '#ccc'
                 }}
               />
             )

@@ -1,9 +1,10 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import type { GeolocationProps } from '@/utils/types';
-import {ActivityIndicator} from 'react-native';
 import { useState, useEffect } from 'react';
-import {getWeatherDescription} from '@/utils/weather';
+import { getWeatherDescription, AxiosOptions } from '@/utils/utils';
 import dayjs from 'dayjs';
+import Loading from '@/components/Loading';
+import axios from 'axios';
 
 interface WeatherProps {
   time: string;
@@ -12,7 +13,7 @@ interface WeatherProps {
   weather_code: string;
 }
 
-export default function TodayTab({geolocation, errorMsg}: GeolocationProps)
+export default function TodayTab({geolocation, errorMsg, setErrorMsg}: GeolocationProps)
 {
   const [weatherTimes, setWeatherTimes] = useState<WeatherProps[] | null>(null);
 
@@ -22,25 +23,35 @@ export default function TodayTab({geolocation, errorMsg}: GeolocationProps)
       return
 
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${geolocation.latitude}&longitude=${geolocation.longitude}&hourly=temperature_2m,weather_code,wind_speed_10m&timezone=GMT&forecast_days=1`;
-    await fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      if (data?.hourly?.time)
-      {
-        const arr:WeatherProps[] = [];
-        for (var i = 0; i < data.hourly.time.length; i++)
+    
+    setErrorMsg(null);
+    
+    axios.get(url, AxiosOptions)
+      .then(res => res.data)
+      .then(data => {
+        if (data?.hourly?.time && data.hourly.time.length > 0)
         {
-          arr.push({
-            time: data.hourly.time[i],
-            temperature: data.hourly.temperature_2m[i],
-            wind_speed: data.hourly.wind_speed_10m[i],
-            weather_code: data.hourly.weather_code[i]
-          });
-        }
-        setWeatherTimes([...arr]);
-      }
-    })
-    .catch(err => console.error(err));
+          const arr:WeatherProps[] = [];
+          for (var i = 0; i < data.hourly.time.length; i++)
+          {
+            arr.push({
+              time: data.hourly.time[i],
+              temperature: data.hourly.temperature_2m[i],
+              wind_speed: data.hourly.wind_speed_10m[i],
+              weather_code: data.hourly.weather_code[i]
+            });
+          }
+          setWeatherTimes([...arr]);
+        }else
+          setErrorMsg('Could not find any result for the supplied address or coordinates.');
+        
+      })
+      .catch((err) => {
+        if (err?.response?.data?.reason?.length > 0)
+          setErrorMsg(err.response.data.reason);
+        else
+          setErrorMsg('The service connection is lost, please check your internet connection or try again later');
+      });
   }
 
   useEffect(() => {
@@ -67,6 +78,23 @@ export default function TodayTab({geolocation, errorMsg}: GeolocationProps)
             {geolocation?.country ?? ''}
           </Text>
           <View className='w-full flex-1 mt-4'>
+              <View className='flex-row flex-5'>
+                <Text className='text-center border py-2 border-gray-400 flex-[1.5] font-bold'>
+                  Days \ Units
+                </Text>
+                <Text className='text-center border py-2 border-gray-400 font-bold flex-[.8]'>
+                  (°C)
+                </Text>
+                <Text className='text-center border py-2 border-gray-400 font-bold flex-[.8]'>
+                  (°C)
+                </Text>
+                <Text className='text-center border py-2 border-gray-400 font-bold flex-1'>
+                  (km/s)
+                </Text>
+                <Text className='text-center border py-2 border-gray-400 flex-[1.5]'>
+                  -
+                </Text>
+              </View>
             <View className='border border-gray-400 '>
               {
                 weatherTimes.map((weather, index) => (
@@ -90,7 +118,7 @@ export default function TodayTab({geolocation, errorMsg}: GeolocationProps)
           </View>
           
         </ScrollView>
-        : <ActivityIndicator size="large" color="#000000" />
+        : <Loading />
       }
     </View>
   );

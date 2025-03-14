@@ -5,25 +5,20 @@ import { useState } from 'react';
 import * as Location from 'expo-location';
 import { useEffect } from 'react';
 import Searcher from './Searcher';
-import { geolocationStateProps } from '@/utils/types';
-
-interface AppBarProps {
-    setGeolocation: (geolocation: geolocationStateProps | null) => void;
-    setErrorMsg: (msg: string | null) => void;
-    setSearcherActive: (active: boolean) => void;
-    searcherActive: boolean;
-}
-
+import { AppBarProps } from '@/utils/types';
+import axios from 'axios';
+import { AxiosOptions } from '@/utils/utils';
 
 export default function AppBar({ setGeolocation, setErrorMsg, searcherActive, setSearcherActive }:AppBarProps) {
     const [search, setSearch] = useState<string>('');
+    const [forceSearch, setForceSearch] = useState<boolean>(false);
 
     async function getLocationDetails(location: Location.LocationObject) {
         const { latitude, longitude } = location.coords;
         let { city, country, region } = { city: '', country: '', region: '' };
 
-        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1&accept-language=en`, {headers: {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'}})
-        .then(response => response.json())
+        axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1&accept-language=en`, AxiosOptions)
+        .then(response => response.data)
         .then(data => {
             city = data.address.city
             country = data.address.country
@@ -43,7 +38,7 @@ export default function AppBar({ setGeolocation, setErrorMsg, searcherActive, se
         }
 
         let location = await Location.getCurrentPositionAsync({});
-        console.log({location});
+
         await getLocationDetails(location);
     }
 
@@ -52,19 +47,19 @@ export default function AppBar({ setGeolocation, setErrorMsg, searcherActive, se
           setSearcherActive(true);
         });
         const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-            if (search && search.length === 0)
-            {
-                console.log('keyboardDidHide', search);
+            if (search.length === 0)
                 setSearcherActive(false);
-            }
         });
-    
-        getCoordinates();
+
         return () => {
           keyboardDidShowListener.remove();
           keyboardDidHideListener.remove();
         };
-    },[]);
+    },[search]);
+
+    useEffect(() => {
+        getCoordinates();
+    }, []);
 
     return (
         <View className={`${searcherActive && 'flex-1'}`}>
@@ -76,7 +71,9 @@ export default function AppBar({ setGeolocation, setErrorMsg, searcherActive, se
                         placeholder='Search'
                         className='text-white pl-10'
                         onChangeText={setSearch}
-                        onSubmitEditing={() => {console.log('clicked');setGeolocation(null);setSearch('')}}
+                        onSubmitEditing={() => {
+                            setForceSearch(true)
+                        }}
                     />
                     <AntDesign name="search1" size={20} color="white" className='absolute left-2 z-[1]' />
                     {
@@ -92,13 +89,13 @@ export default function AppBar({ setGeolocation, setErrorMsg, searcherActive, se
                     <TouchableOpacity
                         activeOpacity={.7}
                         className='size-[40] justify-center items-center rounded-full bg-white/20'
-                        onPress={() => getCoordinates()}
+                        onPress={() => {setSearcherActive(false);getCoordinates()}}
                     >
                         <MaterialCommunityIcons name="mapbox" size={24} color="white" />
                     </TouchableOpacity>
                 </View>
             </View>
-            {searcherActive && <Searcher setGeolocation={setGeolocation} searchPrompt={search} setSearcherActive={setSearcherActive}/>}
+            {searcherActive && <Searcher setForceSearch={setForceSearch} forceSearch={forceSearch} setSearch={setSearch} setGeolocation={setGeolocation} searchPrompt={search} setSearcherActive={setSearcherActive}/>}
         </View>
     )
 }
