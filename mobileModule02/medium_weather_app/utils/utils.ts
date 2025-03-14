@@ -1,3 +1,16 @@
+export function getWeatherDescription(weather_code: string, isDay: number)
+{
+  return isDay ? weather_variable[weather_code].day.description : weather_variable[weather_code].night.description;
+}
+
+export const AxiosOptions = {
+  headers: {
+    "Referer": "https://mediaplus.ma",
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+  },
+  timeout: 10000
+};
+
 const weather_variable:any = {
   "0": {
     day: {
@@ -279,17 +292,4 @@ const weather_variable:any = {
       image: "http://openweathermap.org/img/wn/11n@2x.png",
     },
   },
-};
-
-export function getWeatherDescription(weather_code: string, isDay: number)
-{
-  return isDay ? weather_variable[weather_code].day.description : weather_variable[weather_code].night.description;
-}
-
-export const AxiosOptions = {
-  headers: {
-    "Referer": "https://mediaplus.ma",
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
-  },
-  timeout: 10000
 };

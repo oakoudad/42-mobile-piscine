@@ -18,7 +18,7 @@ export interface geolocationStateProps {
     longitude: number,
     city?: string,
     region?: string,
-    country?: string,
+    country?: string
 }
 
 export interface SearchResult {

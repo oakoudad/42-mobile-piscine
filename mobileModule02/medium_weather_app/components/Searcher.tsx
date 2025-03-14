@@ -20,7 +20,7 @@ export default function Searcher({searchPrompt, setSearcherActive, setGeolocatio
             {
                 setWarningMsg(null);
                 SetLoading(true);
-                axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${searchPrompt}`, AxiosOptions)
+                axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${searchPrompt}&language=en&format=json`, AxiosOptions)
                 .then(response => response.data)
                 .then(data => {
                     if (data && data?.results && data.results?.length > 0)
@@ -29,6 +29,7 @@ export default function Searcher({searchPrompt, setSearcherActive, setGeolocatio
                         setResults([]);
                 })
                 .catch(err => {
+                    console.log({err});
                     setWarningMsg({level: 2, msg: 'The service connection is lost, please check your internet connection or try again later'});
                 })
                 .finally(() => {
@@ -49,19 +50,32 @@ export default function Searcher({searchPrompt, setSearcherActive, setGeolocatio
     }, []);
 
     useEffect(() => {
-        if (forceSearch && searchPrompt.trim().length > 0)
-        {
-            setGeolocation({
-                latitude: results?.[0]?.latitude ?? '',
-                longitude: results?.[0]?.longitude ?? '',
-                city: results?.[0]?.name ?? searchPrompt,
-                region: results?.[0]?.admin1 ??  '--',
-                country: results?.[0]?.country ?? '--'
-            });
+        if (!forceSearch)
+            return;
+        console.log('force search');
+        axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${searchPrompt}&count=1&language=en&format=json`, AxiosOptions)
+        .then(response => response.data)
+        .then(data => {
+            if (data && data?.results && data.results?.length === 1){
+                setGeolocation({
+                    latitude: data?.results?.[0]?.latitude ?? -100,
+                    longitude: data?.results?.[0]?.longitude ?? 0,
+                    city: data?.results?.[0]?.name ?? searchPrompt,
+                    region: data?.results?.[0]?.admin1 ??  '--',
+                    country: data?.results?.[0]?.country ?? '--'
+                });
+            }else
+                setGeolocation({latitude: -100, longitude: 0});
             setSearcherActive(false);
             setSearch('');
+        })
+        .catch(err => {
+            setWarningMsg({level: 2, msg: 'The service connection is lost, please check your internet connection or try again later'});
+        })
+        .finally(() => {
             setForceSearch(false);
-        }
+            SetLoading(false);
+        });
     }, [forceSearch]);
     
     if (warningMsg !== null)

@@ -44,6 +44,7 @@ export default function WeeklyTab({geolocation, errorMsg, setErrorMsg}: Geolocat
           setErrorMsg('Could not find any result for the supplied address or coordinates.');
       })
       .catch((err) => {
+        console.log({err});
         if (err?.response?.data?.reason?.length > 0)
           setErrorMsg(err.response.data.reason);
         else
@@ -52,6 +53,14 @@ export default function WeeklyTab({geolocation, errorMsg, setErrorMsg}: Geolocat
   }
 
   useEffect(() => {
+    if (geolocation?.latitude == -100){
+      setErrorMsg('Could not find any result for the supplied address or coordinates.');
+      return;
+    }
+    if (!geolocation){
+      setWeatherDays(null);
+      return;
+    }
     fetchWeather()
   }, [geolocation]);
 
@@ -74,11 +83,12 @@ export default function WeeklyTab({geolocation, errorMsg, setErrorMsg}: Geolocat
             {geolocation?.region ?? ''}{'\n'}
             {geolocation?.country ?? ''}
           </Text>
+          <View className='h-[2px] bg-black mt-3 mb-1 w-[50%] mx-auto'/>
           <View className='w-full flex-1 mt-4'>
             <View className='border border-gray-400 '>
               <View className='flex-row flex-5'>
                 <Text className='text-center border py-2 border-gray-400 flex-[1.5] font-bold'>
-                  Days \ Units
+                  Date \ Unit
                 </Text>
                 <Text className='text-center border py-2 border-gray-400 font-bold flex-[.8]'>
                   (°C)
@@ -87,7 +97,7 @@ export default function WeeklyTab({geolocation, errorMsg, setErrorMsg}: Geolocat
                   (°C)
                 </Text>
                 <Text className='text-center border py-2 border-gray-400 font-bold flex-1'>
-                  (km/s)
+                  (km/h)
                 </Text>
                 <Text className='text-center border py-2 border-gray-400 flex-[1.5]'>
                   -

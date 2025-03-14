@@ -38,14 +38,23 @@ export default function CurrentlyTab({geolocation, errorMsg, setErrorMsg}: Geolo
         setErrorMsg('Could not find any result for the supplied address or coordinates.');
     })
     .catch((err) => {
-      if (err?.response?.data?.reason?.length > 0)
+      console.log({err});
+      if (err?.response?.data?.reason?.length > 0){
         setErrorMsg(err.response.data.reason);
-      else
+      }else
         setErrorMsg('The service connection is lost, please check your internet connection or try again later');
     });
   }
 
   useEffect(() => {
+    if (geolocation?.latitude == -100){
+      setErrorMsg('Could not find any result for the supplied address or coordinates.');
+      return;
+    }
+    if (!geolocation){
+      setWeather(null);
+      return;
+    }
     fetchWeather()
   }, [geolocation]);
 

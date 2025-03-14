@@ -47,6 +47,7 @@ export default function TodayTab({geolocation, errorMsg, setErrorMsg}: Geolocati
         
       })
       .catch((err) => {
+        console.log({err});
         if (err?.response?.data?.reason?.length > 0)
           setErrorMsg(err.response.data.reason);
         else
@@ -55,6 +56,14 @@ export default function TodayTab({geolocation, errorMsg, setErrorMsg}: Geolocati
   }
 
   useEffect(() => {
+    if (geolocation?.latitude == -100){
+      setErrorMsg('Could not find any result for the supplied address or coordinates.');
+      return;
+    }
+    if (!geolocation){
+      setWeatherTimes(null);
+      return;
+    }
     fetchWeather()
   }, [geolocation]);
 
@@ -77,38 +86,36 @@ export default function TodayTab({geolocation, errorMsg, setErrorMsg}: Geolocati
             {geolocation?.region ?? ''}{'\n'}
             {geolocation?.country ?? ''}
           </Text>
+          <View className='h-[2px] bg-black mt-3 mb-1 w-[50%] mx-auto'/>
           <View className='w-full flex-1 mt-4'>
+            <View className='border border-gray-400 '>
               <View className='flex-row flex-5'>
-                <Text className='text-center border py-2 border-gray-400 flex-[1.5] font-bold'>
-                  Days \ Units
-                </Text>
-                <Text className='text-center border py-2 border-gray-400 font-bold flex-[.8]'>
-                  (°C)
-                </Text>
-                <Text className='text-center border py-2 border-gray-400 font-bold flex-[.8]'>
-                  (°C)
+                <Text className='text-center border py-2 border-gray-400 flex-1 font-bold text-[12px]'>
+                  Time \ Unit
                 </Text>
                 <Text className='text-center border py-2 border-gray-400 font-bold flex-1'>
-                  (km/s)
+                  (°C)
                 </Text>
-                <Text className='text-center border py-2 border-gray-400 flex-[1.5]'>
+                <Text className='text-center border py-2 border-gray-400 font-bold flex-[1]'>
+                  (km/h)
+                </Text>
+                <Text className='text-center border py-2 border-gray-400 font-bold flex-[1.5]'>
                   -
                 </Text>
               </View>
-            <View className='border border-gray-400 '>
               {
                 weatherTimes.map((weather, index) => (
                   <View key={'w_' + index} className='flex-row flex-5'>
-                    <Text className='border border-gray-400 p-1 flex-1 font-bold'>
+                    <Text className='text-center border py-1 border-gray-400 flex-1 font-bold'>
                       {dayjs(weather.time).format("HH:mm")}
                     </Text>
-                    <Text className='border border-gray-400 p-1 flex-1'>
+                    <Text className='border border-gray-400 py-1 text-center flex-1'>
                       {weather.temperature}°C
                     </Text>
-                    <Text className='border border-gray-400 p-1 flex-[1.5]'>
-                      {weather.wind_speed} km/s
+                    <Text className='border border-gray-400 py-1 text-center flex-[1]'>
+                      {weather.wind_speed} km/h
                     </Text>
-                    <Text className='border border-gray-400 p-1 flex-[1.5]'>
+                    <Text className='border border-gray-400 py-1 text-center flex-[1.5]'>
                       {getWeatherDescription(weather.weather_code, 0)}
                     </Text>
                   </View>

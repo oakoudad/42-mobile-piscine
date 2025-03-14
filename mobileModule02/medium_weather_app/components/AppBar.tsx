@@ -89,7 +89,11 @@ export default function AppBar({ setGeolocation, setErrorMsg, searcherActive, se
                     <TouchableOpacity
                         activeOpacity={.7}
                         className='size-[40] justify-center items-center rounded-full bg-white/20'
-                        onPress={() => {setSearcherActive(false);getCoordinates()}}
+                        onPress={() => {
+                            setGeolocation(null);
+                            setSearcherActive(false);
+                            getCoordinates()
+                        }}
                     >
                         <MaterialCommunityIcons name="mapbox" size={24} color="white" />
                     </TouchableOpacity>
