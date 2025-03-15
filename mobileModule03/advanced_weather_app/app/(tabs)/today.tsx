@@ -1,20 +1,24 @@
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image } from 'react-native';
 import type { GeolocationProps } from '@/utils/types';
 import { useState, useEffect } from 'react';
 import { getWeatherDescription, AxiosOptions } from '@/utils/utils';
 import dayjs from 'dayjs';
 import Loading from '@/components/Loading';
 import axios from 'axios';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { LineChart2 } from '@/components/Chart';
 
 interface WeatherProps {
   time: string;
   temperature: string;
   wind_speed: string;
   weather_code: string;
+  is_day: number;
 }
 
 export default function TodayTab({geolocation, errorMsg, setErrorMsg}: GeolocationProps)
 {
+  
   const [weatherTimes, setWeatherTimes] = useState<WeatherProps[] | null>(null);
 
   async function fetchWeather()
@@ -22,11 +26,8 @@ export default function TodayTab({geolocation, errorMsg, setErrorMsg}: Geolocati
     if (!geolocation)
       return
 
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${geolocation.latitude}&longitude=${geolocation.longitude}&hourly=temperature_2m,weather_code,wind_speed_10m&timezone=GMT&forecast_days=1`;
-    
     setErrorMsg(null);
-    
-    axios.get(url, AxiosOptions)
+    axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${geolocation.latitude}&longitude=${geolocation.longitude}&hourly=temperature_2m,weather_code,wind_speed_10m,is_day&timezone=GMT&forecast_days=1`, AxiosOptions)
       .then(res => res.data)
       .then(data => {
         if (data?.hourly?.time && data.hourly.time.length > 0)
@@ -38,7 +39,8 @@ export default function TodayTab({geolocation, errorMsg, setErrorMsg}: Geolocati
               time: data.hourly.time[i],
               temperature: data.hourly.temperature_2m[i],
               wind_speed: data.hourly.wind_speed_10m[i],
-              weather_code: data.hourly.weather_code[i]
+              weather_code: data.hourly.weather_code[i],
+              is_day: data.hourly.is_day[i]
             });
           }
           setWeatherTimes([...arr]);
@@ -79,36 +81,38 @@ export default function TodayTab({geolocation, errorMsg, setErrorMsg}: Geolocati
     <View className='flex-1 justify-center items-center'>
       {
         weatherTimes ?
-        <ScrollView className='w-full flex-1  px-4' contentContainerStyle={{paddingVertical: 10}}>
-          <Text className='text-xl font-bold text-center text-black'>
-            {geolocation?.city ?? ''}{'\n'}
-            {geolocation?.region ?? ''}{'\n'}
-            {geolocation?.country ?? ''}
-          </Text>
-          <View className='h-[2px] bg-black mt-3 mb-1 w-[50%] mx-auto'/>
-          <View className='w-full flex-1 mt-4'>
-            <View className='border border-gray-400 '>
-              {
-                weatherTimes.map((weather, index) => (
-                  <View key={'w_' + index} className='flex-row flex-5'>
-                    <Text className='text-center border py-1 border-gray-400 flex-1 font-bold'>
-                      {dayjs(weather.time).format("HH:mm")}
-                    </Text>
-                    <Text className='border border-gray-400 py-1 text-center flex-1'>
-                      {weather.temperature} °C
-                    </Text>
-                    <Text className='border border-gray-400 py-1 text-center flex-[1]'>
-                      {weather.wind_speed} km/h
-                    </Text>
-                    <Text className='border border-gray-400 py-1 text-center flex-[1.5]'>
-                      {getWeatherDescription(weather.weather_code, 0)}
-                    </Text>
-                  </View>
-                ))
-              }
-            </View>
+        <ScrollView className='w-full h-fit px-[20px]' contentContainerStyle={{paddingVertical: 10, marginVertical: 'auto'}}>
+          <View className='gap-2'>
+            <Text className='font-medium text-center text-[#ffe564] text-4xl'>{geolocation?.city ?? ''}</Text>
+            <Text className='text-xl font-bold text-center text-white'>
+              {geolocation?.region ?? ''}, {geolocation?.country ?? ''}
+            </Text>
           </View>
-          
+          <View className='justify-center items-center overflow-hidden rounded-3xl mt-6 mb-2'>
+            <LineChart2 />
+          </View>
+          <ScrollView horizontal={true} className='w-full flex-1 mt-4' contentContainerClassName='gap-2'>
+            {
+              weatherTimes.map((weather, index) => (
+                <View key={'weather' + index} className='bg-[#005C90] justify-center items-center py-2 gap-2 rounded-lg min-w-[120px]'>
+                  <Text className='text-center text-white flex-1 font-semibold'>
+                    {dayjs(weather.time).format("HH:mm")}
+                  </Text>
+                  <Image
+                    source={{uri: getWeatherDescription(weather.weather_code, weather.is_day, 'image')}}
+                    className={`w-[40px] h-[24px] rounded-full ${!weather.is_day && 'bg-white/20'}`}
+                  />
+                  <Text className='text-center text-white flex-1 font-semibold'>
+                    {weather.temperature} °C
+                  </Text>
+                  <View className='flex-row justify-center items-center gap-1'>
+                    <MaterialCommunityIcons name="weather-windy" size={18} color="white" />
+                    <Text className='font-semibold text-white'>{weather.wind_speed} km/h</Text>
+                  </View>
+                </View>
+              ))
+            }
+          </ScrollView>
         </ScrollView>
         : <Loading />
       }

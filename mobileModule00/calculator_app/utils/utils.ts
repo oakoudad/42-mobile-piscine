@@ -74,7 +74,8 @@ export function handleButtonPress(expression: string[], setExpression: (expressi
 
 export function calculate(expression: string[], setResult: (result: string) => void) {
     var tmp_expression = expression.join('')
-    if (operators.includes(expression[expression.length - 1])) tmp_expression = tmp_expression.slice(0, -1);
+
+    if ([...operators].includes(expression[expression.length - 1])) tmp_expression = tmp_expression.slice(0, -1);
     tmp_expression = tmp_expression.replaceAll('×', '*').replaceAll('÷', '/');
-    setResult(evaluate(tmp_expression));
+    try {setResult(evaluate(tmp_expression))}catch(e){setResult('Error')}
 }

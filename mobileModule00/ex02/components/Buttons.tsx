@@ -3,7 +3,6 @@ import { buttonsGroups, operators } from '../utils/utils';
 import { ButtonsProps } from '../utils/types';
 
 export default function Buttons({orientation}: ButtonsProps) {
-  const copyToClipboard = async () => {};
   return (
     <View className={`
         ${orientation !== 'PORTRAIT' ? 'gap-2 mb-2' : 'gap-4 mb-4'}
@@ -43,7 +42,7 @@ export default function Buttons({orientation}: ButtonsProps) {
                               bg-[#F5F5F5] justify-center items-center rounded-full
                             `}
                             activeOpacity={.7}
-                            onPress={copyToClipboard}
+                            onPress={() => console.log(`button pressed: Copy`)}
                           >
                             <Text>Copy</Text>
                           </TouchableOpacity>

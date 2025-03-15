@@ -4,6 +4,7 @@ import {Image} from 'react-native';
 import type { SearchResult, SearcherProps } from "@/utils/types";
 import axios from 'axios';
 import { AxiosOptions } from '@/utils/utils';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 export default function Searcher({searchPrompt, setSearcherActive, setGeolocation, setSearch, forceSearch, setForceSearch}:SearcherProps) {
     const [results, setResults] = useState<SearchResult[]>([]);
@@ -20,7 +21,7 @@ export default function Searcher({searchPrompt, setSearcherActive, setGeolocatio
             {
                 setWarningMsg(null);
                 SetLoading(true);
-                axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${searchPrompt}&language=en&format=json`, AxiosOptions)
+                axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${searchPrompt}&count=5&language=en&format=json`, AxiosOptions)
                 .then(response => response.data)
                 .then(data => {
                     if (data && data?.results && data.results?.length > 0)
@@ -112,6 +113,7 @@ export default function Searcher({searchPrompt, setSearcherActive, setGeolocatio
                             setSearch('');
                         }}
                     >
+                        <MaterialCommunityIcons name="city-variant-outline" className="ml-1 mr-3 opacity-50" size={24} color="black" />
                         <Text className="text-lg font-bold">{result.name}</Text>
                         <Text className="text-lg">
                             {(result.admin1 && result.admin1.length > 0) ? result.admin1 : '__'},

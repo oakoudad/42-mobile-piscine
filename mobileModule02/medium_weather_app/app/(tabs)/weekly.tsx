@@ -44,7 +44,6 @@ export default function WeeklyTab({geolocation, errorMsg, setErrorMsg}: Geolocat
           setErrorMsg('Could not find any result for the supplied address or coordinates.');
       })
       .catch((err) => {
-        console.log({err});
         if (err?.response?.data?.reason?.length > 0)
           setErrorMsg(err.response.data.reason);
         else
@@ -86,23 +85,6 @@ export default function WeeklyTab({geolocation, errorMsg, setErrorMsg}: Geolocat
           <View className='h-[2px] bg-black mt-3 mb-1 w-[50%] mx-auto'/>
           <View className='w-full flex-1 mt-4'>
             <View className='border border-gray-400 '>
-              <View className='flex-row flex-5'>
-                <Text className='text-center border py-2 border-gray-400 flex-[1.5] font-bold'>
-                  Date \ Unit
-                </Text>
-                <Text className='text-center border py-2 border-gray-400 font-bold flex-[.8]'>
-                  (°C)
-                </Text>
-                <Text className='text-center border py-2 border-gray-400 font-bold flex-[.8]'>
-                  (°C)
-                </Text>
-                <Text className='text-center border py-2 border-gray-400 font-bold flex-1'>
-                  (km/h)
-                </Text>
-                <Text className='text-center border py-2 border-gray-400 flex-[1.5]'>
-                  -
-                </Text>
-              </View>
               {
                 weatherDays.map((weather, index) => (
                   <View key={'w_' + index} className='flex-row flex-5'>
@@ -110,13 +92,10 @@ export default function WeeklyTab({geolocation, errorMsg, setErrorMsg}: Geolocat
                       {(weather.time)}
                     </Text>
                     <Text className='text-center border py-2 border-gray-400 flex-[.8]'>
-                      {weather.temperature_min}
+                      {weather.temperature_min} °C
                     </Text>
                     <Text className='text-center border py-2 border-gray-400 flex-[.8]'>
-                      {weather.temperature_max}
-                    </Text>
-                    <Text className='text-center border py-2 border-gray-400 flex-1'>
-                      {weather.wind_speed}
+                      {weather.temperature_max} °C
                     </Text>
                     <Text className='text-center border py-2 border-gray-400 flex-[1.5]'>
                       {getWeatherDescription(weather.weather_code, 0)}

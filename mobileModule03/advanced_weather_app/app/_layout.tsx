@@ -6,7 +6,7 @@ import Constants from 'expo-constants';
 
 const Layout = () => {
   return (
-    <GestureHandlerRootView className="flex-1" style={{marginTop: Constants.statusBarHeight, flex: 1}}>
+    <GestureHandlerRootView style={{marginTop: Constants.statusBarHeight, flex: 1}}>
         <StatusBar backgroundColor={'black'} />
         <Drawer screenOptions={{headerShown: false,swipeEnabled: false,}}/>
     </GestureHandlerRootView>

@@ -27,7 +27,7 @@ export default function CurrentlyTab({geolocation, errorMsg, setErrorMsg}: Geolo
     axios.get(url, AxiosOptions)
     .then(res => res.data)
     .then(data => {
-      if (data?.current?.weather_code)
+      if (typeof data?.current?.weather_code === 'number')
         setWeather({
           temperature: data.current.temperature_2m,
           wind_speed: data.current.wind_speed_10m,
@@ -38,7 +38,6 @@ export default function CurrentlyTab({geolocation, errorMsg, setErrorMsg}: Geolo
         setErrorMsg('Could not find any result for the supplied address or coordinates.');
     })
     .catch((err) => {
-      console.log({err});
       if (err?.response?.data?.reason?.length > 0){
         setErrorMsg(err.response.data.reason);
       }else
