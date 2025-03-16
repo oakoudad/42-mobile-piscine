@@ -37,7 +37,7 @@ const TabsLayout = () => {
       <AppBar setResult={setResult}/>
       <TabView
         commonOptions={{
-          icon: ({ route, focused, color }) => {
+          icon: ({ route, color }) => {
             const icon:any = route.icon;
             return (
               <MaterialCommunityIcons name={icon} size={24} color={color} />
@@ -46,7 +46,7 @@ const TabsLayout = () => {
         }}      
         navigationState={{ index, routes }}
         renderScene={renderScene}
-        onIndexChange={()=>setIndex(0)}
+        onIndexChange={(_index)=>setIndex(_index)}
         initialLayout={{ width: layout.width }}
         tabBarPosition="bottom"
         renderTabBar={props => {

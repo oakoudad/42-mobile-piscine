@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import Loading from '@/components/Loading';
 import axios from 'axios';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { LineChart2 } from '@/components/Chart';
+import LineChart from '@/components/Chart';
 
 interface WeatherProps {
   time: string;
@@ -88,8 +88,8 @@ export default function TodayTab({geolocation, errorMsg, setErrorMsg}: Geolocati
               {geolocation?.region ?? ''}, {geolocation?.country ?? ''}
             </Text>
           </View>
-          <View className='justify-center items-center overflow-hidden rounded-3xl mt-6 mb-2'>
-            <LineChart2 />
+          <View className='justify-center items-center overflow-whidden rounded-3xl mt-6 mb-2'>
+            <LineChart  />
           </View>
           <ScrollView horizontal={true} className='w-full flex-1 mt-4' contentContainerClassName='gap-2'>
             {

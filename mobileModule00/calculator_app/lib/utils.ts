@@ -49,7 +49,7 @@ const getLatestNumber = (expression: string[]) => {
     return latestNumber;
 }
 
-export function handleButtonPress(expression: string[], setExpression: (expression: string[]) => void, button: ButtonProps) {
+export function handleButtonPress(expression: string[], setResult: (result: string) => void, setExpression: (expression: string[]) => void, button: ButtonProps) {
     if (button.text === 'C')
     {
         expression.pop();
@@ -57,7 +57,10 @@ export function handleButtonPress(expression: string[], setExpression: (expressi
         if (expression.length === 0) setExpression(['0']);
     }
     else if (button.text === 'AC')
+    {
         setExpression(['0']);
+        setResult('0');
+    }
     else if (operators.includes(button.text)) {
         if (operators.includes(expression[expression.length - 1])) expression.pop()
         setExpression([...expression, button.text]);
@@ -77,5 +80,17 @@ export function calculate(expression: string[], setResult: (result: string) => v
 
     if ([...operators].includes(expression[expression.length - 1])) tmp_expression = tmp_expression.slice(0, -1);
     tmp_expression = tmp_expression.replaceAll('×', '*').replaceAll('÷', '/');
-    try {setResult(evaluate(tmp_expression))}catch(e){setResult('Error')}
+    try {
+        const result = evaluate(tmp_expression)
+
+        if (Number.isFinite(result))
+            setResult(result)
+        else if (Number.isNaN(result))
+            setResult('Indeterminate')
+        else
+            setResult('Undefined')
+    }
+    catch(e){
+        setResult('Error')
+    }
 }

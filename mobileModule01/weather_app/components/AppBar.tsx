@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Platform, ToastAndroid } from 'react-native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useState } from 'react';
@@ -19,8 +19,22 @@ export default function AppBar({ setResult }:AppBarProps) {
                     placeholderTextColor="white"
                     placeholder='Search for a city'
                     className='text-white pl-10'
-                    onChangeText={setSearch}
-                    onSubmitEditing={() => {setResult(search);setSearch('')}}
+                    onChangeText={(s) => {
+                        if (s.length <= 85)
+                            setSearch(s);
+                    }}
+                    onSubmitEditing={() => {
+                        if (search.trim().length > 0)
+                        {
+                            setResult(search);
+                            setSearch('')
+                        }
+                        else if(Platform.OS === 'android')
+                            ToastAndroid.show('Please enter a city name', ToastAndroid.SHORT);
+                        else
+                            alert('Please enter a city name')
+                    }}
+                    numberOfLines={1}
                 />
                 <AntDesign name="search1" size={20} color="white" className='absolute left-2 z-[1]' />
             </View>

@@ -1,6 +1,6 @@
 import { Text, View, TouchableOpacity } from 'react-native';
-import { buttonsGroups, handleButtonPress, operators, calculate } from '../utils/utils';
-import { ButtonsProps } from '../utils/types';
+import { buttonsGroups, handleButtonPress, operators, calculate } from '@/lib/utils';
+import { ButtonsProps } from '@/lib/types';
 import * as Clipboard from 'expo-clipboard';
 import { ToastAndroid } from 'react-native';
 import { Platform } from 'react-native';
@@ -35,7 +35,7 @@ export default function Buttons({orientation, expression, setExpression, setResu
                           activeOpacity={.7}
                           onPress={() => {
                             if (button.text !== '=' && setExpression)
-                              handleButtonPress(expression, setExpression, button)
+                              handleButtonPress(expression, setResult, setExpression, button)
                             else if (button.text === '=' && setResult)
                               calculate(expression, setResult)
                           }}

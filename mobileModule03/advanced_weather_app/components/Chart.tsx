@@ -5,10 +5,10 @@ import { GridComponent } from 'echarts/components';
 import { SVGRenderer, SvgChart } from '@wuba/react-native-echarts';
 import { Dimensions } from 'react-native';
 
-const w = Dimensions.get('window').width - 40;
+const w = Dimensions.get('window').width - 60;
 echarts.use([SVGRenderer, LineChart, GridComponent]);
 
-export function LineChart2() {
+export default function LineChart2({data}: any) {
     const option = {
         xAxis: {
             label: 'Day',
@@ -17,6 +17,9 @@ export function LineChart2() {
         },
         yAxis: {
             type: 'value',
+            axisLabel: {
+                formatter: '{value}°'
+            }
         },
         series: [
             {

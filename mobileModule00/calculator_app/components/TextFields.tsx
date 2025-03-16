@@ -1,5 +1,5 @@
 import { Text, ScrollView } from 'react-native';
-import type { ButtonsProps } from '../utils/types';
+import type { ButtonsProps } from '@/lib/types';
 
 export default function TextFields({expression, result}: ButtonsProps) {
   return (

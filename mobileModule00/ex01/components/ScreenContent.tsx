@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 const words = [
   'A simple text',
-  'Hello World',
+  'Hello World!',
 ]
 
 export const ScreenContent = () => {
