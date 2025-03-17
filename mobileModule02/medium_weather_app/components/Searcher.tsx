@@ -20,7 +20,7 @@ export default function Searcher({searchPrompt, setSearcherActive, setGeolocatio
             {
                 setWarningMsg(null);
                 SetLoading(true);
-                axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${searchPrompt}&language=en&format=json`, AxiosOptions)
+                axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchPrompt.trim())}&language=en&format=json`, AxiosOptions)
                 .then(response => response.data)
                 .then(data => {
                     if (data && data?.results && data.results?.length > 0)
@@ -51,7 +51,7 @@ export default function Searcher({searchPrompt, setSearcherActive, setGeolocatio
     useEffect(() => {
         if (!forceSearch)
             return;
-        axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${searchPrompt}&count=1&language=en&format=json`, AxiosOptions)
+        axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchPrompt.trim())}&count=1&language=en&format=json`, AxiosOptions)
         .then(response => response.data)
         .then(data => {
             if (data && data?.results && data.results?.length === 1){

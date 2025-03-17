@@ -70,16 +70,20 @@ export default function AppBar({ setGeolocation, setErrorMsg, searcherActive, se
                         placeholderTextColor="white"
                         placeholder='Search'
                         className='text-white pl-10'
-                        onChangeText={setSearch}
+                        onChangeText={(s) => {
+                            if (s.length <= 85)
+                                setSearch(s);
+                        }}
                         onSubmitEditing={() => {
-                            setForceSearch(true)
+                            if  (search.trim().length > 0)
+                                setForceSearch(true)
                         }}
                     />
                     <AntDesign name="search1" size={20} color="white" className='absolute left-2 z-[1]' />
                     {
                         (search.length > 0) && <TouchableOpacity
                             className='absolute right-2 z-[1]'
-                            onPress={() => {setSearch(''); setSearcherActive(false)}}
+                            onPress={() => {setSearch('');setSearcherActive(false)}}
                         >
                             <MaterialCommunityIcons name="close" size={24} color="white" />
                         </TouchableOpacity>
