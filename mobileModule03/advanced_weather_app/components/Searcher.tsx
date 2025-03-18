@@ -100,7 +100,7 @@ export default function Searcher({searchPrompt, setSearcherActive, setGeolocatio
                 (searchPrompt.trim().length > 0) ? results.map((result, index) => (
                     <TouchableOpacity
                         key={'search_' + index}
-                        className="flex flex-row items-center rounded-md border border-black/10 p-4 mb-2 bg-white gap-[5px]"
+                        className="flex flex-row items-center rounded-md border border-black/10 p-4 mb-2 bg-white gap-[5px] overflow-hidden relative"
                         onPress={() => {
                             setGeolocation({
                                 latitude: result.latitude,
@@ -113,11 +113,13 @@ export default function Searcher({searchPrompt, setSearcherActive, setGeolocatio
                             setSearch('');
                         }}
                     >
-                        <MaterialCommunityIcons name="city-variant-outline" className="ml-1 mr-3 opacity-50" size={24} color="black" />
-                        <Text className="text-lg font-bold">{result.name}</Text>
-                        <Text className="text-lg">
-                            {(result.admin1 && result.admin1.length > 0) ? result.admin1 : '__'},
-                            {result.country}
+                        <MaterialCommunityIcons name="city-variant-outline" className="absolute left-5 opacity-50" size={24} color="black" />
+                        <Text numberOfLines={1} className="pl-12">
+                            <Text className="text-lg font-bold">{result.name} </Text>
+                            <Text className="text-lg">
+                                {(result.admin1 && result.admin1.length > 0) ? result.admin1 : '__'},
+                                {result.country}
+                            </Text>
                         </Text>
                     </TouchableOpacity>
                 ))

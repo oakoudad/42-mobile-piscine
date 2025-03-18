@@ -1,4 +1,5 @@
-import { View, Keyboard, TouchableOpacity, TextInput } from 'react-native';
+import { View, Keyboard, TouchableOpacity, TextInput, Platform, ToastAndroid } from 'react-native';
+
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useState } from 'react';
@@ -66,14 +67,25 @@ export default function AppBar({ setGeolocation, setErrorMsg, searcherActive, se
             <View className='flex-row bg-black/30 py-2'>
                 <View className='flex-1 justify-center relative'>
                     <TextInput
+                        inputMode="search"
+                        returnKeyType="search"
                         value={search}
                         placeholderTextColor="white"
-                        placeholder='Search'
+                        placeholder='Search for a city'
                         className='text-white pl-10'
-                        onChangeText={setSearch}
+                        onChangeText={(s) => (s.length <= 90) && setSearch(s)}
                         onSubmitEditing={() => {
-                            setForceSearch(true)
+                            if (search.trim().length > 0)
+                            {
+                                setForceSearch(true)
+                                // setSearch('')
+                            }
+                            else if(Platform.OS === 'android')
+                                ToastAndroid.show('Please enter a city name', ToastAndroid.SHORT);
+                            else
+                                alert('Please enter a city name')
                         }}
+                        numberOfLines={1}
                     />
                     <AntDesign name="search1" size={20} color="white" className='absolute left-2 z-[1]' />
                     {

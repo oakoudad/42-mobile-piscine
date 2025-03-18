@@ -61,10 +61,15 @@ export default function TodayTab({geolocation, errorMsg, setErrorMsg}: Geolocati
 
   if (errorMsg)
     return (
-      <View className='flex-1 justify-center items-center px-6'>
-        <Text className='text-center text-xl text-red-500'>
-          {errorMsg}
-        </Text>
+      <View className='flex-1 justify-center items-center px-8'>
+        <View className=' bg-red-200 rounded-lg px-4 pt-6 pb-4'>
+          <Text className='absolute -top-4 left-4 bg-red-200 font-bold text-xl text-red-500 px-2 rounded-full border border-red-500'>
+            Error
+          </Text>
+          <Text className='text-center text-xl text-red-500'>
+            {errorMsg}
+          </Text>
+        </View>
       </View>
     );
 
