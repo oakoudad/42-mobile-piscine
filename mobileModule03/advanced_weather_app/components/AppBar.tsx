@@ -63,7 +63,7 @@ export default function AppBar({ setGeolocation, setErrorMsg, searcherActive, se
 
     return (
         <View className={`${searcherActive && 'flex-1'}`}>
-            <View className='flex-row bg-black py-2'>
+            <View className='flex-row bg-black/30 py-2'>
                 <View className='flex-1 justify-center relative'>
                     <TextInput
                         value={search}

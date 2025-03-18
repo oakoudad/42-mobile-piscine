@@ -1,24 +1,15 @@
 import { View, Text, ScrollView, StyleSheet, Image } from 'react-native';
-import type { GeolocationProps } from '@/utils/types';
+import type { GeolocationProps, WeatherProps } from '@/utils/types';
 import { useState, useEffect } from 'react';
 import { getWeatherDescription, AxiosOptions } from '@/utils/utils';
 import dayjs from 'dayjs';
 import Loading from '@/components/Loading';
 import axios from 'axios';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import LineChart from '@/components/Chart';
-
-interface WeatherProps {
-  time: string;
-  temperature: string;
-  wind_speed: string;
-  weather_code: string;
-  is_day: number;
-}
+import LineChart from '@/components/DailyChart';
 
 export default function TodayTab({geolocation, errorMsg, setErrorMsg}: GeolocationProps)
 {
-  
   const [weatherTimes, setWeatherTimes] = useState<WeatherProps[] | null>(null);
 
   async function fetchWeather()
@@ -88,8 +79,8 @@ export default function TodayTab({geolocation, errorMsg, setErrorMsg}: Geolocati
               {geolocation?.region ?? ''}, {geolocation?.country ?? ''}
             </Text>
           </View>
-          <View className='justify-center items-center overflow-whidden rounded-3xl mt-6 mb-2'>
-            <LineChart  />
+          <View className='justify-center items-center overflow-hidden bg-[#100c2a] rounded-3xl mt-6 mb-2 pt-4'>
+            <LineChart weatherData={weatherTimes} title={'Today temperature'}/>
           </View>
           <ScrollView horizontal={true} className='w-full flex-1 mt-4' contentContainerClassName='gap-2'>
             {

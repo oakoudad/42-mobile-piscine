@@ -36,8 +36,8 @@ const TabsLayout = () => {
             return(
               <CustomTabBar
                 {...props}
-                indicatorStyle={{ backgroundColor: 'white' }}
-                style={{backgroundColor: 'black',}}
+                indicatorStyle={{ backgroundColor: 'white', height: 4 }}
+                style={{backgroundColor: 'rgba(0, 0, 0, .2)',}}
               />
             )
           }}

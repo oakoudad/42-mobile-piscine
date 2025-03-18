@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { getWeatherDescription, AxiosOptions } from '@/utils/utils';
 import Loading from '@/components/Loading';
 import axios from 'axios';
+import LineChart from '@/components/WeeklyChart';
 
 interface WeatherProps {
   time: string;
@@ -75,13 +76,16 @@ export default function WeeklyTab({geolocation, errorMsg, setErrorMsg}: Geolocat
     <View className='flex-1 justify-center items-center'>
       {
         weatherDays ?
-        <ScrollView className='w-full flex-1  px-4' contentContainerStyle={{paddingVertical: 10}}>
-          <Text className='text-xl font-bold text-center text-black'>
-            {geolocation?.city ?? ''}{'\n'}
-            {geolocation?.region ?? ''}{'\n'}
-            {geolocation?.country ?? ''}
-          </Text>
-          <View className='h-[2px] bg-black mt-3 mb-1 w-[50%] mx-auto'/>
+        <ScrollView className='w-full h-fit px-[20px]' contentContainerStyle={{paddingVertical: 10, marginVertical: 'auto'}}>
+          <View className='gap-2'>
+            <Text className='font-medium text-center text-[#ffe564] text-4xl'>{geolocation?.city ?? ''}</Text>
+            <Text className='text-xl font-bold text-center text-white'>
+              {geolocation?.region ?? ''}, {geolocation?.country ?? ''}
+            </Text>
+          </View>
+          <View className='justify-center items-center overflow-hidden bg-[#100c2a] rounded-3xl mt-6 mb-2 pt-4'>
+            <LineChart weatherData={weatherDays} title={'Today temperature'}/>
+          </View>
           <View className='w-full flex-1 mt-4'>
             <View className='border border-gray-400 '>
               {

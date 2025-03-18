@@ -86,9 +86,10 @@ export default function CurrentlyTab({geolocation, errorMsg, setErrorMsg}: Geolo
           <View className='bg-[#ffffff]/60 py-3 px-4 gap-2 rounded-2xl justify-center items-center relative'>
             <View className='flex-row justify-center items-center gap-1'>
               <Image source={{uri: getWeatherDescription(weather.weather_code, weather.is_day, 'image')}} className='size-[40px] rounded-full'/>
-              <Text className='font-bold text-black'>{getWeatherDescription(weather.weather_code, weather.is_day)}</Text>
+              <Text className='font-bold tex
+              t-black'>{getWeatherDescription(weather.weather_code, weather.is_day)}</Text>
             </View>
-            <View className='my-1 flex-row gap-[2px] opacity-50 justify-center items-center'>
+            <View className='-mt-1 mb-1 flex-row gap-[2px] opacity-50 justify-center items-center'>
               {[.5, 1, 2, 3, 4, 4.5, 5, 4.5, 4, 3, 2, 1, .5].map((size, index) => <View key={'dot_' + index} style={{width: size, height: size}} className='bg-black rounded-full'/>)}
             </View>
             <View className='flex-row justify-center items-center gap-1'>

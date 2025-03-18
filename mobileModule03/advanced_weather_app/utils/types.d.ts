@@ -39,6 +39,14 @@ export interface SearchResult {
     admin3: string;
 }
 
+export interface WeatherProps {
+    time: string;
+    temperature: string;
+    wind_speed: string;
+    weather_code: string;
+    is_day: number;
+}
+
 export interface AppBarProps {
     setGeolocation: (geolocation: geolocationStateProps | null) => void;
     setErrorMsg: (msg: string | null) => void;
