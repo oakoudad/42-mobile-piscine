@@ -7,7 +7,7 @@ import { Dimensions } from 'react-native';
 import type { WeatherProps } from '@/utils/types';
 import dayjs from 'dayjs';
 
-const w = Dimensions.get('window').width - 60;
+const w = Dimensions.get('window').width - 30;
 echarts.use([TitleComponent, SVGRenderer, LineChart, GridComponent]);
 
 export default function DailyChart({weatherData, title}: {weatherData: WeatherProps[] | null, title: string}) {
@@ -38,7 +38,7 @@ export default function DailyChart({weatherData, title}: {weatherData: WeatherPr
           yAxis: {
             type: 'value',
             axisLabel: {
-              formatter: '{value} C°'
+              formatter: '{value}°'
             }
           },
           series: [

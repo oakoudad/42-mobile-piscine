@@ -77,10 +77,10 @@ export default function CurrentlyTab({geolocation, errorMsg, setErrorMsg}: Geolo
               {geolocation?.region ?? ''}, {geolocation?.country ?? ''}
             </Text>
             <Text
-              className='text-[5.5rem] font-normal text-center text-white mb-4 mt-3'
+              className='text-[5rem] font-normal text-center text-white mb-4 mt-3'
               style={{textShadowColor: 'rgba(0,92,144, 1)',textShadowOffset: {width: 0, height: 0},textShadowRadius: 20}}
             >
-              {weather.temperature}°
+              {weather.temperature}°C
             </Text>
           </View>
           <View className='bg-[#ffffff]/60 py-3 px-4 gap-2 rounded-2xl justify-center items-center relative'>

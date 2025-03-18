@@ -1,10 +1,11 @@
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image } from 'react-native';
 import type { GeolocationProps } from '@/utils/types';
 import { useState, useEffect } from 'react';
 import { getWeatherDescription, AxiosOptions } from '@/utils/utils';
 import Loading from '@/components/Loading';
 import axios from 'axios';
 import LineChart from '@/components/WeeklyChart';
+import dayjs from 'dayjs';
 
 interface WeatherProps {
   time: string;
@@ -22,7 +23,6 @@ export default function WeeklyTab({geolocation, errorMsg, setErrorMsg}: Geolocat
   {
     if (!geolocation)
       return
-
     axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${geolocation.latitude}&longitude=${geolocation.longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max&timezone=GMT`, AxiosOptions)
       .then(res => res.data)
       .then(data => {
@@ -36,7 +36,7 @@ export default function WeeklyTab({geolocation, errorMsg, setErrorMsg}: Geolocat
               temperature_min: data.daily.temperature_2m_min[i],
               temperature_max: data.daily.temperature_2m_max[i],
               wind_speed: data.daily.wind_speed_10m_max[i],
-              weather_code: data.daily.weather_code[i]
+              weather_code: data.daily.weather_code[i],
             });
           }
           setWeatherDays([...arr]);
@@ -84,30 +84,31 @@ export default function WeeklyTab({geolocation, errorMsg, setErrorMsg}: Geolocat
             </Text>
           </View>
           <View className='justify-center items-center overflow-hidden bg-[#100c2a] rounded-3xl mt-6 mb-2 pt-4'>
-            <LineChart weatherData={weatherDays} title={'Today temperature'}/>
+            <LineChart weatherData={weatherDays} title={'Weekly temperature'}/>
           </View>
-          <View className='w-full flex-1 mt-4'>
-            <View className='border border-gray-400 '>
-              {
-                weatherDays.map((weather, index) => (
-                  <View key={'w_' + index} className='flex-row flex-5'>
-                    <Text className='text-center border py-2 border-gray-400 flex-[1.5] font-bold'>
-                      {(weather.time)}
-                    </Text>
-                    <Text className='text-center border py-2 border-gray-400 flex-[.8]'>
-                      {weather.temperature_min} °C
-                    </Text>
-                    <Text className='text-center border py-2 border-gray-400 flex-[.8]'>
-                      {weather.temperature_max} °C
-                    </Text>
-                    <Text className='text-center border py-2 border-gray-400 flex-[1.5]'>
-                      {getWeatherDescription(weather.weather_code, 0)}
-                    </Text>
-                  </View>
-                ))
-              }
-            </View>
-          </View>
+          <ScrollView horizontal={true} className='w-full flex-1 mt-4' contentContainerClassName='gap-2'>
+            {
+              weatherDays.map((weather, index) => (
+                <View key={'weather' + index} className='bg-[#005C90] justify-center items-center py-2 gap-2 rounded-lg min-w-[120px]'>
+                  <Text className='text-center text-white flex-1 font-semibold'>
+                    {(dayjs(weather.time).format("D/MM"))}
+                  </Text>
+                  <Image
+                    source={{uri: getWeatherDescription(weather.weather_code, 1, 'image')}}
+                    className={`w-[40px] h-[24px] rounded-full}`}
+                  />
+                  <Text className='text-center text-[#ff4a4a] flex-1 font-semibold flex'>
+                    {weather.temperature_max} °C
+                    <Text className='text-[12px]'> max</Text>
+                  </Text>
+                  <Text className='text-center text-[#50b4f7] flex-1 font-semibold'>
+                    {weather.temperature_min} °C
+                    <Text className='text-[12px]'> min</Text>
+                  </Text>
+                </View>
+              ))
+            }
+          </ScrollView>
           
         </ScrollView>
         : <Loading />
