@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "diary_app",
+    "jsEngine": "hermes",
     "slug": "diary_app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -40,6 +41,12 @@
         {
           "initialOrientation": "DEFAULT"
         }
+      ],
+      [
+        "react-native-auth0",
+        {
+          "domain": "dev-t7m5hgp7w43o7qm5.us.auth0.com"
+        }
       ]
     ],
     "experiments": {
@@ -52,6 +59,12 @@
       "eas": {
         "projectId": "cf2d4162-f895-4bc3-a02c-9d9582bc6551"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/cf2d4162-f895-4bc3-a02c-9d9582bc6551"
     }
   }
 }

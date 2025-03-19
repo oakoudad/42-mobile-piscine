@@ -5,6 +5,7 @@ import Constants from 'expo-constants';
 import { View } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import 'expo-dev-client';
 
 const Layout = () => {
   const [ orientation, setOrientation ] = useState<'PORTRAIT' | 'LANDSCAPE'>('PORTRAIT');
