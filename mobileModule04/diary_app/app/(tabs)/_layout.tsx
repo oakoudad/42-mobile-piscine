@@ -1,70 +1,45 @@
-import React, { useState } from 'react';
-import { useWindowDimensions } from 'react-native';
-import { TabView, TabBar } from 'react-native-tab-view';
-import CurrentlyTab from './index';
-import TodayTab from './today';
-import WeeklyTab from './weekly';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import AppBar from '@/components/AppBar';
+import { Tabs } from 'expo-router';
+import React from 'react';
+import { Platform } from 'react-native';
 
-const TabsLayout = () => {
-  const layout = useWindowDimensions();
-  const [index, setIndex] = useState(0);
-  const [result, setResult] = useState('');
-  
-  const routes = [
-    { key: 'index', title: 'Currently', icon: 'clock-time-five-outline' },
-    { key: 'today', title: 'Today', icon: 'hours-24' },
-    { key: 'weekly', title: 'Weekly', icon: 'calendar-week' }
-  ];
-  const renderScene = ({ route }:any) => {
-    switch (route.key) {
-      case 'index':
-        return <CurrentlyTab result={result} />;
-      case 'today':
-        return <TodayTab result={result} />;
-      case 'weekly':
-        return <WeeklyTab result={result} />;
-      default:
-        return null;
-    }
-  };
+import { HapticTab } from '@/components/HapticTab';
+import { IconSymbol } from '@/components/ui/IconSymbol';
+import TabBarBackground from '@/components/ui/TabBarBackground';
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
-  const CustomTabBar = TabBar as any;
+export default function TabLayout() {
+  const colorScheme = useColorScheme();
 
   return (
-    <>
-      <AppBar setResult={setResult}/>
-      <TabView
-        commonOptions={{
-          icon: ({ route, color }) => {
-            const icon:any = route.icon;
-            return (
-              <MaterialCommunityIcons name={icon} size={24} color={color} />
-            )
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        headerShown: false,
+        tabBarButton: HapticTab,
+        tabBarBackground: TabBarBackground,
+        tabBarStyle: Platform.select({
+          ios: {
+            // Use a transparent background on iOS to show the blur effect
+            position: 'absolute',
           },
-        }}      
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={(_index)=>setIndex(_index)}
-        initialLayout={{ width: layout.width }}
-        tabBarPosition="bottom"
-        renderTabBar={props => {
-          return(
-            <CustomTabBar
-              {...props}
-              indicatorStyle={{ backgroundColor: 'white' }}
-              style={{
-                backgroundColor: 'black',
-                borderTopWidth: 1,
-                borderTopColor: '#ccc'
-              }}
-            />
-          )
+          default: {},
+        }),
+      }}>
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
-    </>
+      <Tabs.Screen
+        name="explore"
+        options={{
+          title: 'Explore',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+        }}
+      />
+    </Tabs>
   );
-};
-
-export default TabsLayout;
+}
