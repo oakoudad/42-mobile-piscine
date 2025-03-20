@@ -7,7 +7,7 @@ import { Alert } from 'react-native';
 import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import * as WebBrowser from 'expo-web-browser';
 import jwtDecode from 'jwt-decode';
-import { readTokenFromStorage } from '@/lib/utils';
+import { readTokenFromStorage, fetchUserInfo } from '@/lib/utils';
 
 const auth0ClientId = process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID ?? '';
 const domain = process.env.EXPO_PUBLIC_AUTH0_DOMAIN;
@@ -27,6 +27,7 @@ interface UserContextType {
   user: User | undefined;
   setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
   promptAsync: any;
+  profile: any;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -34,8 +35,9 @@ WebBrowser.maybeCompleteAuthSession();
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | undefined>(undefined);
+  const [profile, setProfile] = useState<any>(undefined);
 
-  const { setItem: setToken } = useAsyncStorage('jwtToken')
+  const { setItem } = useAsyncStorage('jwtToken')
 
   const [request, result, promptAsync] = AuthSession.useAuthRequest(
       {
@@ -51,8 +53,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       discovery
   );
 
+  
+
   useEffect(() => {
-      readTokenFromStorage(setUser)
+      readTokenFromStorage(setUser, setProfile)
       if (result) {
           if (result?.type === 'error') {
               Alert.alert(
@@ -79,14 +83,17 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                           },
                           discovery
                       );
+
                       const tokenConfig: TokenResponseConfig = codeRes?.getRequestConfig();
                       
                       const jwtToken = tokenConfig.accessToken;
                       
-                      setToken(JSON.stringify(tokenConfig));
+                      setItem(JSON.stringify(tokenConfig));
                       
                       const decoded = jwtDecode(jwtToken);
                       setUser({ jwtToken, decoded })
+                      
+                      setProfile(fetchUserInfo(jwtToken))
 
                   }
                   getToken()
@@ -96,7 +103,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [result]);
 
   return (
-    <UserContext.Provider value={{ user, setUser, promptAsync }}>
+    <UserContext.Provider value={{ user, setUser, promptAsync, profile }}>
       {children}
     </UserContext.Provider>
   );

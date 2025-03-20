@@ -5,7 +5,7 @@ import jwtDecode from 'jwt-decode';
 
 const domain = process.env.EXPO_PUBLIC_AUTH0_DOMAIN;
 
-export const readTokenFromStorage = async (setUser: any) => {
+export const readTokenFromStorage = async (setUser: any, setProfile:any) => {
     const auth0ClientId = process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID ?? '';
     const discovery = {
         authorizationEndpoint: `${domain}/authorize`,
@@ -33,6 +33,7 @@ export const readTokenFromStorage = async (setUser: any) => {
         
         const decoded = jwtDecode(tokenResponse.accessToken);
         setUser({ jwtToken: tokenResponse.accessToken, decoded })
+        setProfile(await fetchUserInfo(tokenResponse.accessToken));
     }
 };
 
@@ -52,3 +53,12 @@ export const revokeToken = async (token:string) => {
         console.error('Error revoking token:', error);
     }
 };
+
+export async function fetchUserInfo(jwtToken:string) {
+    const response = await fetch('https://dev-3yuosqd70685yulf.us.auth0.com/userinfo', {
+        headers: {
+        Authorization: `Bearer ${jwtToken}`
+        }
+    });
+    return await response.json();
+}

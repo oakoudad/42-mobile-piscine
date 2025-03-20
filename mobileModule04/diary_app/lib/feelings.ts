@@ -1,28 +1,34 @@
-const feelings:any = {
-    0: {
+const feelings:any = [
+    {
         name:"face-smile-beam",
-        color: '#00B9E8'
+        color: '#00B9E8',
+        label: 'Happy'
     },
-    1: {
+    {
         name:"face-grin-tears",
-        color: '#66FF00'
+        color: '#66FF00',
+        label: 'Laughing'
     },
-    2: {
+    {
         name:"sad-tear",
-        color: '#FF0800'
+        color: '#FF0800',
+        label: 'Sad'
     },
-    3: {
+    {
         name:"surprise",
-        color: '#FFA000'
+        color: '#FFA000',
+        label: 'Surprised'
     },
-    4: {
+    {
         name:"angry",
-        color: '#9F8170'
+        color: '#9F8170',
+        label: 'Angry'
     },
-    5: {
+    {
         name:"face-meh",
-        color: '#29AB87'
-    },
-}
+        color: '#29AB87',
+        label: 'Normal'
+    }
+]
 
 export default feelings;
