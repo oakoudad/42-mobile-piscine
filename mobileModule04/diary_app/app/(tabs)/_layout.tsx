@@ -1,45 +1,48 @@
+// TabLayout.tsx
 import { Tabs } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
+import Login from '@/components/Login';
+import { UserProvider, useUser } from '@/context/UserContext';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+function TabsLayout() {
+  const { user } = useUser();
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  if (!(user?.jwtToken && user.jwtToken.length > 0))
+    return (<Login />)
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
+          ios: { position: 'absolute' },
           default: {},
         }),
       }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: 'Home',
+            tabBarIcon: ({ color }) => <MaterialCommunityIcons name="face-man-profile" size={24} color={color} />
+          }}
+        />
+        <Tabs.Screen
+          name="calandar"
+          options={{
+            title: 'Calandar',
+            tabBarIcon: ({ color }) => <MaterialCommunityIcons name="calendar-week" size={24} color={color} />
+          }}
+        />
     </Tabs>
+  );
+}
+
+export default function TabLayout() {
+  return (
+    <UserProvider>
+      <TabsLayout />
+    </UserProvider>
   );
 }

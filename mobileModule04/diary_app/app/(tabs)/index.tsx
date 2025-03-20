@@ -1,74 +1,101 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity, Modal } from "react-native"
+import { useUser } from '@/context/UserContext'
+import * as WebBrowser from 'expo-web-browser'
+import AntDesign from '@expo/vector-icons/AntDesign';
+import Constants from 'expo-constants'
+import { collection, addDoc } from "firebase/firestore"; 
+import { db } from '@/lib/firebaseConfig';
+import DiaryBox from "@/components/DiaryBox";
+import { useState } from "react";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-
+WebBrowser.maybeCompleteAuthSession();
 export default function HomeScreen() {
+  const { user, setUser } = useUser();
+  const [modalVisible, setModalVisible] = useState(false);
+
+
+  const addDiary = async () => {
+    try {
+      const docRef = await addDoc(collection(db, "diary"), {
+        first: "Ada",
+        last: "Lovelace",
+        born: 1815
+      });
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  }
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+    <View className="flex-1">
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+      >
+        <View className="flex-1 justify-center items-center w-full bg-black/50">
+          <View className="bg-white size-[90%] justify-center items-center rounded-2xl relative">
+            <Text>Modal</Text>
+            <TouchableOpacity
+              onPress={async () => setModalVisible(!modalVisible)}
+              className="absolute top-2 right-3"
+            >
+              <AntDesign name="closecircle" size={24} color="red" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <View className="bg-primary-500 py-5 w-full" style={{marginTop: Constants.statusBarHeight}}>
+        <Text className="text-xl text-center text-white font-semibold uppercase">Your latest diary entites</Text>
+      </View>
+      <View className="flex-1 items-center">
+        <ScrollView className="flex-1 w-full z-[1]" contentContainerClassName="gap-2 px-4 py-3" >
+          {
+            [1, 1, 1, 1, 1, 11, 1, 1, 1, 1, 11, 1, 1, 1, 1, 1, 1].map((_, i) => (
+              <DiaryBox
+                i={i}
+                key={i}
+                onPress={async () => {
+                  setModalVisible(!modalVisible)
+                }}
+              />
+            ))
+          }
+        </ScrollView>
+        <TouchableOpacity
+          onPress={async () => {await addDiary()}}
+          className="absolute bottom-6 z-[2] bg-primary-500 rounded-full"
+        >
+          <Text className="py-2 px-4 font-semibold text-xl text-white">
+            New diary entry
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  )
 }
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+  
+// const handleLogout = async () => {
+//   if (user?.jwtToken)
+//     await revokeToken(user.jwtToken);
+
+//   removeTokenFromStorage();
+//   setUser(undefined);
+// };
+  // return (
+  //   <View className="flex-1 justify-center items-center gap-5">
+  //     <Text className="text-5xl">Home Screen</Text>
+  //     <Text className="text-2xl">
+  //       Expire at: <Text className="font-bold">{user?.decoded?.exp ? new Date(user.decoded.exp * 1000).toLocaleString() : ''}</Text>
+  //     </Text>
+  //     <Button
+  //       onPress={async () => {await handleLogout()}}
+  //       title="Logout"
+  //     />
+  //     <Button
+  //       onPress={async () => {await addDiary()}}
+  //       title="Add data"
+  //     />
+  //   </View>
+  // );
