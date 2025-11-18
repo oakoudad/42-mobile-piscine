@@ -24,8 +24,11 @@ export default function AddModal({ onClosing }: { onClosing: () => void }) {
     }, [modalVisible]);
 
     const submit = async () => {
+        if (title.trim() === '' || content.trim() === '') {
+            Alert.alert('Validation Error', 'Title and Content are required fields.');
+            return;
+        }
         setIsLoading(true)
-        console.log('submitting', title, content, profile);
         try {
             const id = await addDiary({
                 title: title,
@@ -34,7 +37,7 @@ export default function AddModal({ onClosing }: { onClosing: () => void }) {
                 created_at: Date.now(),
                 content: content
             });
-            console.log({id});
+
             if (id === null)
             {
                 Alert.alert('Error', 'An error occured while saving the diary entry')
@@ -43,7 +46,6 @@ export default function AddModal({ onClosing }: { onClosing: () => void }) {
             setModalVisible(false);
             onClosing();
         }catch(e) {
-            console.error(e);
             setIsLoading(false);
             return;
         }

@@ -5,7 +5,6 @@ import { TokenResponseConfig } from 'expo-auth-session';
 import { useEffect } from 'react';
 import { Alert } from 'react-native';
 import { useAsyncStorage } from '@react-native-async-storage/async-storage';
-import * as WebBrowser from 'expo-web-browser';
 import jwtDecode from 'jwt-decode';
 import { readTokenFromStorage, fetchUserInfo } from '@/lib/utils';
 
@@ -32,7 +31,6 @@ interface UserContextType {
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
-WebBrowser.maybeCompleteAuthSession();
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | undefined>(undefined);

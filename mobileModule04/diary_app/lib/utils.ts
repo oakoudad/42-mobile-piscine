@@ -34,9 +34,7 @@ export const readTokenFromStorage = async (setUser: any, setProfile:any) => {
         const decoded = jwtDecode(tokenResponse.accessToken);
         setUser({ jwtToken: tokenResponse.accessToken, decoded })
         
-        setProfile(await fetchUserInfo(tokenResponse.accessToken));
-        console.log('Decoded JWT:', await fetchUserInfo(tokenResponse.accessToken));
-        
+        setProfile(await fetchUserInfo(tokenResponse.accessToken));        
     }
 };
 

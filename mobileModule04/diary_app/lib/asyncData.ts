@@ -8,7 +8,6 @@ export const addDiary = async (data: DiaryProps) => {
         console.log("Adding document...", data);
         const collectionRef = collection(db, "diary");
         const docRef = await addDoc(collectionRef, data);
-        console.log("Document written with ID: ", docRef.id);
         return docRef.id;
     } catch (e) {
         console.error("Error adding document: ", e);
@@ -20,8 +19,6 @@ export const getDiaries = async (email: string) => {
     const entries:DiaryProps[] = [];
 
     try {
-        console.log("Getting documents...", email);
-
         const diaryRef = collection(db, "diary");
         const q = query(diaryRef, where("email", "==", email));
         const querySnapshot = await getDocs(q);

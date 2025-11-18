@@ -1,6 +1,6 @@
 // TabLayout.tsx
 import { Tabs } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Platform } from 'react-native';
 import Login from '@/components/Login';
 import { UserProvider, useUser } from '@/context/UserContext';
