@@ -10,6 +10,7 @@ import jwtDecode from 'jwt-decode';
 import { readTokenFromStorage, fetchUserInfo } from '@/lib/utils';
 
 const auth0ClientId = process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID ?? '';
+const auth0ClientSecret = process.env.EXPO_PUBLIC_AUTH0_CLIENT_SECRET ?? '';
 const domain = process.env.EXPO_PUBLIC_AUTH0_DOMAIN;
 const redirectUri = AuthSession.makeRedirectUri({scheme: 'exp'})
 
@@ -38,7 +39,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [profile, setProfile] = useState<any>(undefined);
 
   const { setItem } = useAsyncStorage('jwtToken')
-
+  
   const [request, result, promptAsync] = AuthSession.useAuthRequest(
       {
           clientId: auth0ClientId,
@@ -78,7 +79,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                           code,
                           redirectUri,
                           clientId: auth0ClientId,
-                          clientSecret: 'sQ-eaXLPfLF1qGBy0FrKhVppypRAuw-HCyL_dN-GrSVqw2oivD6-AlSZAwvkgLJz',
+                          clientSecret: auth0ClientSecret,
                           extraParams: { code_verifier: request?.codeVerifier ?? '' }
                           },
                           discovery
@@ -92,8 +93,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                       
                       const decoded = jwtDecode(jwtToken);
                       setUser({ jwtToken, decoded })
-                      
-                      setProfile(fetchUserInfo(jwtToken))
+
+                      setProfile(await fetchUserInfo(jwtToken))
 
                   }
                   getToken()

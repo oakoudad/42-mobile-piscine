@@ -5,6 +5,10 @@ import { DiaryProps } from "@/lib/types";
 import dayjs from 'dayjs';
 
 export default function DiaryBox({i, onPress, data}:{i: number, onPress: Function, data: DiaryProps}) {
+    // Ensure feeling index is valid (0-5), default to 5 (Normal) if invalid
+    const feelingIndex = (data.feeling >= 0 && data.feeling < feelings.length) ? data.feeling : 5;
+    const feeling = feelings[feelingIndex];
+
     return (
         <View>
             <TouchableOpacity
@@ -13,8 +17,8 @@ export default function DiaryBox({i, onPress, data}:{i: number, onPress: Functio
                 key={i}
                 className="px-4 py-4 bg-white w-full flex-row justify-center items-center rounded-2xl gap-4"
                 >
-                <View className="size-11 justify-center items-center rounded-full" style={{backgroundColor: feelings[data.feeling].color + '1c'}}>
-                    <FontAwesome6 name={feelings[data.feeling].name} size={24} color={feelings[data.feeling].color} />
+                <View className="size-11 justify-center items-center rounded-full" style={{backgroundColor: feeling.color + '1c'}}>
+                    <FontAwesome6 name={feeling.name} size={24} color={feeling.color} />
                 </View>
                 <View className="flex-1">
                     <Text className="font-bold text-lg">{data.title}</Text>

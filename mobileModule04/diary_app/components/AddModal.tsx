@@ -25,20 +25,28 @@ export default function AddModal({ onClosing }: { onClosing: () => void }) {
 
     const submit = async () => {
         setIsLoading(true)
-        const id = await addDiary({
-            title: title,
-            email: profile.email,
-            feeling: feeling,
-            created_at: Date.now(),
-            content: content
-        });
-        if (id === null)
-        {
-            Alert.alert('Error', 'An error occured while saving the diary entry')
+        console.log('submitting', title, content, profile);
+        try {
+            const id = await addDiary({
+                title: title,
+                email: profile.email,
+                feeling: feeling,
+                created_at: Date.now(),
+                content: content
+            });
+            console.log({id});
+            if (id === null)
+            {
+                Alert.alert('Error', 'An error occured while saving the diary entry')
+                return;
+            }
+            setModalVisible(false);
+            onClosing();
+        }catch(e) {
+            console.error(e);
+            setIsLoading(false);
             return;
         }
-        setModalVisible(false);
-        onClosing();
     }
 
     if ((!modalVisible))

@@ -9,6 +9,10 @@ import { deleteDiary } from '@/lib/asyncData'
 export default function CustomModal({modalVisible, setModalVisible, data, onClosing}: {modalVisible: boolean, setModalVisible: Function, data: DiaryProps | undefined, onClosing: Function}) {
   if (!data) return null;
 
+  // Ensure feeling index is valid (0-5), default to 5 (Normal) if invalid
+  const feelingIndex = (data.feeling >= 0 && data.feeling < feelings.length) ? data.feeling : 5;
+  const feeling = feelings[feelingIndex];
+
   return (
     <Modal
         animationType="slide"
@@ -28,11 +32,11 @@ export default function CustomModal({modalVisible, setModalVisible, data, onClos
                 <ScrollView className="flex-1">
                     <View className="flex-row gap-2 justify-between items-center pt-2 px-3 w-full">
                         <View className="flex-row gap-2 items-center ">
-                            <View className="size-14 justify-center items-center rounded-full" style={{backgroundColor: feelings[data.feeling].color + '1c'}}>
-                                <FontAwesome6 name={feelings[data.feeling].name} size={28} color={feelings[data.feeling].color} />
+                            <View className="size-14 justify-center items-center rounded-full" style={{backgroundColor: feeling.color + '1c'}}>
+                                <FontAwesome6 name={feeling.name} size={28} color={feeling.color} />
                             </View>
                             <View className="">
-                                <Text className="font-semibold text-sm" style={{color: feelings[5].color}}>{feelings[data.feeling].label}</Text>
+                                <Text className="font-semibold text-sm" style={{color: feeling.color}}>{feeling.label}</Text>
                                 <Text className="text-sm text-gray-500">{dayjs.unix(data.created_at / 1000).format('D MMMM YYYY')}</Text>
                             </View>
                         </View>

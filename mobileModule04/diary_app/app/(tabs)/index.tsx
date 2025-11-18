@@ -20,10 +20,18 @@ export default function HomeScreen() {
   
   useEffect(() => {
     const getEntries = async () => {
-      setEntries(await getDiaries(profile.email));
+      if (!profile || !profile?.email) {
+        return;
+      }
+      try {
+        const diaries = await getDiaries(profile.email);
+        setEntries(diaries);
+      } catch (error) {
+        console.error('Error fetching diaries:', error);
+        setEntries([]);
+      }
     }
-    if (profile && profile?.email !== undefined)
-      getEntries()
+    getEntries()
   }, [refresh, profile]);
 
 

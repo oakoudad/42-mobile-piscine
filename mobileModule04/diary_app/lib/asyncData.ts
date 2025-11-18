@@ -17,22 +17,32 @@ export const addDiary = async (data: DiaryProps) => {
 }
 
 export const getDiaries = async (email: string) => {
-    const entries:DiaryProps[] | null = [];
-    console.log("Getting documents...", email);
-    
-    const diaryRef = collection(db, "diary");
-    const q = query(diaryRef, where("email", "==", email));
-    const querySnapshot = await getDocs(q);
+    const entries:DiaryProps[] = [];
 
-    querySnapshot.forEach((doc) => {
-        entries.push({ ...doc.data(), id: doc.id } as DiaryProps);
-    });
+    try {
+        console.log("Getting documents...", email);
+
+        const diaryRef = collection(db, "diary");
+        const q = query(diaryRef, where("email", "==", email));
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach((doc) => {
+            entries.push({ ...doc.data(), id: doc.id } as DiaryProps);
+        });
+    } catch (e) {
+        console.error("Error getting documents: ", e);
+    }
 
     return entries
 }
 
 export const deleteDiary = async (id: string) => {
-    const docRef = doc(db, "diary", id);
-    await deleteDoc(docRef);
-    console.log("Document deleted with ID: ", id);
+    try {
+        const docRef = doc(db, "diary", id);
+        await deleteDoc(docRef);
+        console.log("Document deleted with ID: ", id);
+    } catch (e) {
+        console.error("Error deleting document: ", e);
+        throw e;
+    }
 }

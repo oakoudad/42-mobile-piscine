@@ -11,15 +11,14 @@ export const readTokenFromStorage = async (setUser: any, setProfile:any) => {
         authorizationEndpoint: `${domain}/authorize`,
         tokenEndpoint: `${domain}/oauth/token`,
     };
-
     const { getItem, setItem } = useAsyncStorage('jwtToken')
-
+    
     const tokenString:string | null = await getItem();
-
     if (!tokenString)
         return;
     
     const tokenConfig: TokenResponseConfig = JSON.parse(tokenString);
+    
     if (tokenConfig) {
         let tokenResponse = new TokenResponse(tokenConfig);
         
@@ -29,11 +28,15 @@ export const readTokenFromStorage = async (setUser: any, setProfile:any) => {
             
             tokenResponse = await tokenResponse.refreshAsync(refreshConfig, endpointConfig);
         }
+        
         setItem(JSON.stringify(tokenResponse.getRequestConfig()));
         
         const decoded = jwtDecode(tokenResponse.accessToken);
         setUser({ jwtToken: tokenResponse.accessToken, decoded })
+        
         setProfile(await fetchUserInfo(tokenResponse.accessToken));
+        console.log('Decoded JWT:', await fetchUserInfo(tokenResponse.accessToken));
+        
     }
 };
 
@@ -55,7 +58,7 @@ export const revokeToken = async (token:string) => {
 };
 
 export async function fetchUserInfo(jwtToken:string) {
-    const response = await fetch('https://dev-3yuosqd70685yulf.us.auth0.com/userinfo', {
+    const response = await fetch(`${process.env.EXPO_PUBLIC_AUTH0_DOMAIN}/userinfo`, {
         headers: {
         Authorization: `Bearer ${jwtToken}`
         }
