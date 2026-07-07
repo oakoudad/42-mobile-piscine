@@ -1,0 +1,116 @@
+// UserContext.tsx
+import React, { createContext, useContext, useState } from 'react';
+import * as AuthSession from 'expo-auth-session';
+import { TokenResponseConfig } from 'expo-auth-session';
+import { useEffect } from 'react';
+import { Alert } from 'react-native';
+import { useAsyncStorage } from '@react-native-async-storage/async-storage';
+import { jwtDecode } from 'jwt-decode';
+import { readTokenFromStorage, fetchUserInfo } from '@/lib/utils';
+
+const auth0ClientId = process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID ?? '';
+const auth0ClientSecret = process.env.EXPO_PUBLIC_AUTH0_CLIENT_SECRET ?? '';
+const domain = process.env.EXPO_PUBLIC_AUTH0_DOMAIN;
+const redirectUri = AuthSession.makeRedirectUri({scheme: 'exp'})
+
+const discovery = {
+  authorizationEndpoint: `${domain}/authorize`,
+  tokenEndpoint: `${domain}/oauth/token`,
+};
+
+console.log('Redirect URI:', discovery, redirectUri);
+interface User {
+  jwtToken?: string;
+  decoded?: any;
+}
+
+interface UserContextType {
+  user: User | undefined;
+  setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
+  promptAsync: any;
+  profile: any;
+}
+
+const UserContext = createContext<UserContextType | undefined>(undefined);
+
+export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | undefined>(undefined);
+  const [profile, setProfile] = useState<any>(undefined);
+
+  const { setItem } = useAsyncStorage('jwtToken')
+  
+  const [request, result, promptAsync] = AuthSession.useAuthRequest(
+      {
+          clientId: auth0ClientId,
+          scopes: ["openid", "profile", "email", "offline_access"],
+          extraParams: {
+            audience: `${domain}/api/v2/`,
+            access_type: "offline",
+            prompt: 'login'
+          },
+          redirectUri
+      },
+      discovery
+  );
+
+  
+
+  useEffect(() => {
+      readTokenFromStorage(setUser, setProfile)
+      if (result) {
+          if (result?.type === 'error') {
+              Alert.alert(
+                  'Authentication error',
+                  result.params.error_description || 'something went wrong'
+              );
+              return;
+          }
+          else if (result?.type === 'cancel') {
+              Alert.alert('Authentication error', 'Authentication was canceled');
+              return;
+          }
+          else if (result?.type === 'success') {
+              const code = result.params.code;
+              if (code) {
+                  const getToken = async () => {
+                      const codeRes = await AuthSession.exchangeCodeAsync(
+                          {
+                          code,
+                          redirectUri,
+                          clientId: auth0ClientId,
+                          clientSecret: auth0ClientSecret,
+                          extraParams: { code_verifier: request?.codeVerifier ?? '' }
+                          },
+                          discovery
+                      );
+
+                      const tokenConfig: TokenResponseConfig = codeRes?.getRequestConfig();
+                      
+                      const jwtToken = tokenConfig.accessToken;
+                      
+                      setItem(JSON.stringify(tokenConfig));
+                      
+                      const decoded = jwtDecode(jwtToken);
+                      setUser({ jwtToken, decoded })
+
+                      setProfile(await fetchUserInfo(jwtToken))
+
+                  }
+                  getToken()
+              }
+          }
+      }
+  }, [result]);
+
+  return (
+    <UserContext.Provider value={{ user, setUser, promptAsync, profile }}>
+      {children}
+    </UserContext.Provider>
+  );
+};
+
+export const useUser = () => {
+  const context = useContext(UserContext);
+  if (!context) throw new Error("useUser must be used within a UserProvider");
+  return context;
+};
