@@ -84,7 +84,7 @@ export default function AddModal({ onClosing }: { onClosing: () => void }) {
             visible={modalVisible}
         >
             <View className="flex-1 justify-center items-center w-full bg-black/50">
-                <View className="bg-white size-[90%] items-center overflow-hidden rounded-2xl relative pb-2">
+                <View className="bg-white w-[90%] flex flex-col min-h-[60%] items-center overflow-hidden rounded-2xl relative pb-2">
                     <View className="py-4 flex-row px-4 bg-gray-100">
                         <View className="flex-1">
                             <Text className="font-bold">Add an entry</Text>
@@ -131,7 +131,7 @@ export default function AddModal({ onClosing }: { onClosing: () => void }) {
                                 }
                             </View>
                         </View>
-                        <View className="w-full gap-1 flex-1 ">
+                        <View className="w-full gap-1 flex-1 max-h-48">
                             <Text className="font-bold">Content</Text>
                             <TextInput
                                 editable={!isLoading}

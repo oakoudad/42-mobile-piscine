@@ -18,7 +18,7 @@ const discovery = {
   tokenEndpoint: `${domain}/oauth/token`,
 };
 
-console.log('Redirect URI:', discovery, redirectUri);
+console.log('Redirect URI:', redirectUri);
 interface User {
   jwtToken?: string;
   decoded?: any;

@@ -2,7 +2,7 @@ const feelings:any = [
     {
         name:"face-smile-beam",
         color: '#00B9E8',
-        bgcolor: '#263d67',
+        bgcolor: '#4d6fad',
         label: 'Happy'
     },
     {

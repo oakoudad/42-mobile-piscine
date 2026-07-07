@@ -5,7 +5,6 @@ import type { DiaryProps } from './types';
 
 export const addDiary = async (data: DiaryProps) => {
     try {
-        console.log("Adding document...", data);
         const collectionRef = collection(db, "diary");
         const docRef = await addDoc(collectionRef, data);
         return docRef.id;
@@ -37,7 +36,6 @@ export const deleteDiary = async (id: string) => {
     try {
         const docRef = doc(db, "diary", id);
         await deleteDoc(docRef);
-        console.log("Document deleted with ID: ", id);
     } catch (e) {
         console.error("Error deleting document: ", e);
         throw e;
