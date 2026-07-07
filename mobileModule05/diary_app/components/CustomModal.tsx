@@ -32,11 +32,11 @@ export default function CustomModal({modalVisible, setModalVisible, data, onClos
                 <ScrollView className="flex-1">
                     <View className="flex-row gap-2 justify-between items-center pt-2 px-3 w-full">
                         <View className="flex-row gap-2 items-center ">
-                            <View className="size-14 justify-center items-center rounded-full" style={{backgroundColor: feeling.color + '1c'}}>
-                                <FontAwesome6 name={feeling.name} size={28} color={feeling.color} />
+                            <View className="size-14 justify-center items-center rounded-full" style={{backgroundColor: feeling.color}}>
+                                <FontAwesome6 name={feeling.name} size={28} color={feeling.bgcolor} />
                             </View>
                             <View className="">
-                                <Text className="font-semibold text-sm" style={{color: feeling.color}}>{feeling.label}</Text>
+                                <Text className="font-semibold text-sm" style={{color: feeling.bgcolor}}>{feeling.label}</Text>
                                 <Text className="text-sm text-gray-500">{dayjs.unix(data.created_at / 1000).format('D MMMM YYYY')}</Text>
                             </View>
                         </View>

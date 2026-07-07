@@ -70,7 +70,7 @@ export default function AddModal({ onClosing }: { onClosing: () => void }) {
 
     if ((!modalVisible))
         return (
-            <TouchableOpacity onPress={async () => setModalVisible(true)} className="absolute bottom-4 self-center z-[2] bg-primary-500 rounded-full shadow-lg">
+            <TouchableOpacity onPress={async () => setModalVisible(true)} className="absolute bottom-2 self-center z-[2] bg-primary-500 rounded-full shadow-lg">
                 <Text className="py-2 px-4 font-semibold text-xl text-white">
                     New diary entry
                 </Text>

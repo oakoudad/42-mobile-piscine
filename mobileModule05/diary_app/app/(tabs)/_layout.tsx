@@ -36,13 +36,6 @@ function TabsLayout() {
             tabBarIcon: ({ color }) => <MaterialCommunityIcons name="calendar-week" size={24} color={color} />
           }}
         />
-        <Tabs.Screen
-          name="profile"
-          options={{
-            title: 'Profile',
-            tabBarIcon: ({ color }) => <Feather name="user" size={24} color={color} />
-          }}
-        />
     </Tabs>
   );
 }
