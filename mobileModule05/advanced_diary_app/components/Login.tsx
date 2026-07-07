@@ -8,7 +8,7 @@ export default function Login() {
 
     return (
         <ImageBackground
-            source={require('@/assets/images/bg.jpg')} 
+            source={require('@/assets/images/bg.webp')} 
             className='flex-1 bg-white w-full'
             resizeMode="stretch"
         >

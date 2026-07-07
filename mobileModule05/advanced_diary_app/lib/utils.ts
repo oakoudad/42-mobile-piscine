@@ -46,7 +46,7 @@ export const removeTokenFromStorage = async () => {
 
 export const revokeToken = async (token:string) => {
     try {
-        const result = await AuthSession.revokeAsync(
+        await AuthSession.revokeAsync(
             { token },
             { revocationEndpoint: `${domain}/v2/logout` }
         );
