@@ -7,7 +7,7 @@ export default function Summary({entries}:{entries: DiaryProps[] | null}) {
     if (!entries || entries.length === 0)
         return <></>;
     return (
-        <View className="bg-#ffffff rounded-2xl overflow-hidden">
+        <View className="bg-white rounded-2xl overflow-hidden gap-2">
             {
                 feelings.map((feeling: any, i: number) => {
                     const persontage = (entries.filter((entry) => entry.feeling === i).length / entries.length) * 100;
