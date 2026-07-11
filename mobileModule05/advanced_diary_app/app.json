@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "diary_app",
-    "slug": "diary_app",
+    "name": "advanced_diary_app",
+    "slug": "advanced_diary_app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
